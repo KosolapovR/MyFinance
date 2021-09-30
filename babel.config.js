@@ -22,6 +22,8 @@ module.exports = {
               screens: './src/screens',
               navigators: './src/navigators',
               features: './src/features',
+              services: './src/services',
+              models: './src/models',
             },
           },
         ],
