@@ -1,7 +1,7 @@
 import React from 'react';
 import {View, Text} from 'react-native';
 
-function HomeScreen() {
+function AuthInitScreen() {
   return (
     <View
       style={{
@@ -9,9 +9,9 @@ function HomeScreen() {
         alignItems: 'center',
         justifyContent: 'center',
       }}>
-      <Text>HomeScreen</Text>
+      <Text>AuthInitScreen</Text>
     </View>
   );
 }
 
-export default HomeScreen;
+export default AuthInitScreen;

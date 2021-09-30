@@ -1,16 +1,22 @@
 import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {MainTabs} from './MainTabs';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {AuthStack} from './AuthStack';
 
-const NativeStack = createNativeStackNavigator();
+import {createStackNavigator} from '@react-navigation/stack';
 
-const RootStack = () => {
+const Stack = createStackNavigator();
+
+const RootStack = ({isAuth}: {isAuth?: boolean}) => {
   return (
     <NavigationContainer>
-      <NativeStack.Navigator screenOptions={{headerShown: false}}>
-        <NativeStack.Screen name="Main" component={MainTabs} />
-      </NativeStack.Navigator>
+      <Stack.Navigator screenOptions={{headerShown: false}}>
+        {isAuth ? (
+          <Stack.Screen name="MainTabs" component={MainTabs} />
+        ) : (
+          <Stack.Screen name="AuthStack" component={AuthStack} />
+        )}
+      </Stack.Navigator>
     </NavigationContainer>
   );
 };
