@@ -19,6 +19,8 @@ module.exports = {
               '.json',
             ],
             alias: {
+              context: './src/context',
+              hooks: './src/hooks',
               screens: './src/screens',
               navigators: './src/navigators',
               features: './src/features',

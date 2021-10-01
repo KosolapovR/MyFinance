@@ -1,10 +1,11 @@
-export interface ITransaction {
-  transaction_id: string;
-  type: 'income' | 'outcome';
-  category_id: string;
-  sum: number;
-  date: string;
-  time: string;
-  currency_id: string;
-  comment?: string;
-}
+import {ICurrency} from './ICurrency';
+import {ITransaction} from './ITransaction';
+import {ITransactionCategory} from './ITransactionCategory';
+import {ITransactionCategoryGroup} from './ITransactionCategoryGroup';
+
+export type {
+  ICurrency,
+  ITransaction,
+  ITransactionCategory,
+  ITransactionCategoryGroup,
+};
