@@ -1,12 +1,11 @@
 import React from 'react';
 import {View} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-
 import {SafeAreaView} from 'react-native-safe-area-context/src/SafeAreaView.native';
-import AnalyticsScreen from '../screens/AnalyticsScreen';
+
+import AnalyticsScreen from 'screens/AnalyticsScreen';
 import InvestmentsScreen from 'screens/InvestmentsScreen';
 import CreditsScreen from 'screens/CreditsScreen';
-import TransactionsScreen from 'screens/TransactionsScreen';
 import SettingsScreen from 'screens/SettingsScreen';
 import {TransactionsTopTabs} from 'navigators/TransactionsTopTabs';
 
