@@ -8,6 +8,7 @@ import InvestmentsScreen from 'screens/InvestmentsScreen';
 import CreditsScreen from 'screens/CreditsScreen';
 import TransactionsScreen from 'screens/TransactionsScreen';
 import SettingsScreen from 'screens/SettingsScreen';
+import {TransactionsTopTabs} from 'navigators/TransactionsTopTabs';
 
 const Tab = createBottomTabNavigator();
 
@@ -46,7 +47,7 @@ export const MainTabs = () => {
           />
           <Tab.Screen
             name="TransactionsScreen"
-            component={TransactionsScreen}
+            component={TransactionsTopTabs}
             options={{
               tabBarLabel: 'Transactions',
             }}

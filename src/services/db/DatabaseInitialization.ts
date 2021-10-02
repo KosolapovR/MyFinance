@@ -57,7 +57,6 @@ export class DatabaseInitialization {
   // This should be called each time the database is opened.
   public updateDatabaseTables(database: SQLite.SQLiteDatabase): Promise<void> {
     let dbVersion: number = 0;
-    console.log('Beginning database updates...');
 
     // First: create tables if they do not already exist
     return database
@@ -68,7 +67,6 @@ export class DatabaseInitialization {
       })
       .then(version => {
         dbVersion = version;
-        console.log('Current database version is: ' + dbVersion);
 
         // Perform DB updates based on this version
 
