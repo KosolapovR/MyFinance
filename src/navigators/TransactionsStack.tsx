@@ -1,12 +1,12 @@
 import React from 'react';
-import {createStackNavigator} from '@react-navigation/stack';
 import {TransactionsScreen, SingleTransactionScreen} from 'screens';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 export type TransactionsStackParamList = {
   TransactionsScreen: undefined;
   SingleTransactionScreen: undefined;
 };
-const Stack = createStackNavigator<TransactionsStackParamList>();
+const Stack = createNativeStackNavigator<TransactionsStackParamList>();
 
 const TransactionsStack = () => {
   return (
@@ -20,7 +20,6 @@ const TransactionsStack = () => {
         name="SingleTransactionScreen"
         component={SingleTransactionScreen}
         options={{
-          headerStyle: {backgroundColor: 'red'},
           headerTitle: 'Транзакция',
         }}
       />

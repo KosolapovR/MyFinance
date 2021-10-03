@@ -4,10 +4,13 @@ import {FormikProps, FormikValues, useFormik} from 'formik';
 import * as Yup from 'yup';
 import styled from 'styled-components/native';
 import {Button, TextInput} from 'react-native-paper';
+import DateTime from 'components/inputs/DateTime';
 
 interface FormValues {
   category: string;
   sum: string;
+  date: string;
+  time: string;
 }
 
 const Container = styled.View`
@@ -26,7 +29,7 @@ function SingleTransactionScreen() {
   const {handleSubmit, handleChange, values, errors}: FormikProps<FormValues> =
     useFormik({
       validationSchema: validationSchema,
-      initialValues: {category: '', sum: ''},
+      initialValues: {category: '', sum: '', date: '', time: ''},
       onSubmit: (formValues: FormikValues) => {
         onSubmit(formValues);
       },
@@ -40,6 +43,10 @@ function SingleTransactionScreen() {
     <SafeAreaView>
       <Container>
         <StyledForm>
+          <DateTime
+            onChangeDate={handleChange('date')}
+            onChangeTime={handleChange('time')}
+          />
           <TextInput
             label={errors.sum ? errors.sum : 'Amount'}
             value={values.sum}
