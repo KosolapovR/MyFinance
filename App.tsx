@@ -7,10 +7,13 @@ import {
   View,
 } from 'react-native';
 import {Provider as StoreProvider} from 'react-redux';
+import {Provider as PaperProvider} from 'react-native-paper';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
 
 import {store} from './src/store';
 import RootStack from 'navigators/RootStack';
 import {DatabaseProvider} from 'context/DatabaseContext';
+import {theme} from 'theme/index';
 
 interface IApp {
   type: 'app' | 'storybook' | '';
@@ -18,14 +21,20 @@ interface IApp {
 const App = () => {
   const isDarkMode = useColorScheme() === 'dark';
 
-  const [app, setApp] = useState<IApp>({type: ''});
+  const [app, setApp] = useState<IApp>({type: 'app'});
 
   if (app.type === 'app') {
     return (
       <StoreProvider store={store}>
         <DatabaseProvider>
-          <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-          <RootStack isAuth={true} />
+          <PaperProvider theme={theme}>
+            <SafeAreaProvider>
+              <StatusBar
+                barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+              />
+              <RootStack isAuth={true} />
+            </SafeAreaProvider>
+          </PaperProvider>
         </DatabaseProvider>
       </StoreProvider>
     );
