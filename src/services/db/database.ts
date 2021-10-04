@@ -2,40 +2,27 @@ import SQLite from 'react-native-sqlite-storage';
 import {DatabaseInitialization} from './DatabaseInitialization';
 import {DATABASE} from './constants';
 import {AppState, AppStateStatus} from 'react-native';
-import {
-  ICurrency,
-  ITransaction,
-  ITransactionCategory,
-  ITransactionCategoryGroup,
-} from 'models';
+import {ICurrency, ITransaction, ITransactionCategory} from 'models';
 
 export interface Database {
   // Create
   createCurrency(newCurrency: ICurrency): Promise<void>;
-  createTransactionCategoryGroup(
-    newTransactionCategoryGroup: ITransactionCategoryGroup,
-  ): Promise<void>;
   createTransactionCategory(
     newTransactionCategory: ITransactionCategory,
   ): Promise<void>;
   createTransaction(newTransaction: ITransaction): Promise<void>;
   // Read
   getAllCurrencies(): Promise<ICurrency[]>;
-  getAllTransactionCategoryGroups(): Promise<ITransactionCategoryGroup[]>;
   getAllTransactionCategories(): Promise<ITransactionCategory[]>;
   getAllTransactions(): Promise<ITransaction[]>;
   // Update
   updateCurrency(updatedCurrency: ICurrency): Promise<void>;
-  updateTransactionCategoryGroup(
-    updatedTransactionCategoryGroup: ITransactionCategoryGroup,
-  ): Promise<void>;
   updateTransactionCategory(
     updatedTransactionCategory: ITransactionCategory,
   ): Promise<void>;
   updateTransaction(updatedTransaction: ITransaction): Promise<void>;
   // Delete
   deleteCurrencyByID(id: number): Promise<void>;
-  deleteTransactionCategoryGroupByID(id: number): Promise<void>;
   deleteTransactionCategoryByID(id: number): Promise<void>;
   deleteTransactionByID(id: number): Promise<void>;
 }
@@ -50,26 +37,14 @@ async function createCurrency(newCurrency: ICurrency): Promise<void> {
     [newCurrency.name, newCurrency.countryCode, newCurrency.countryName],
   );
 }
-async function createTransactionCategoryGroup(
-  newTransactionCategoryGroup: ITransactionCategoryGroup,
-): Promise<void> {
-  const db = await getDatabase();
-  await db.executeSql(
-    'INSERT INTO transaction_category_group (name, color) VALUES (?, ?);',
-    [newTransactionCategoryGroup.name, newTransactionCategoryGroup.color],
-  );
-}
 async function createTransactionCategory(
   newTransactionCategory: ITransactionCategory,
 ): Promise<void> {
   const db = await getDatabase();
+  console.log('[db] attempt transaction_category ', newTransactionCategory);
   await db.executeSql(
-    'INSERT INTO transaction_category (name, icon, transaction_category_group_id) VALUES (?, ?, ?);',
-    [
-      newTransactionCategory.name,
-      newTransactionCategory.icon,
-      newTransactionCategory.transaction_category_group_id,
-    ],
+    'INSERT INTO transaction_category (name, icon) VALUES (?, ?);',
+    [newTransactionCategory.name, newTransactionCategory.icon],
   );
 }
 async function createTransaction(newTransaction: ITransaction): Promise<void> {
@@ -106,24 +81,7 @@ async function getAllCurrencies(): Promise<ICurrency[]> {
   }
   return currencies;
 }
-async function getAllTransactionCategoryGroups(): Promise<
-  ITransactionCategoryGroup[]
-> {
-  const db = await getDatabase();
-  const [results] = await db.executeSql(
-    'SELECT * FROM transaction_category_group ORDER BY transaction_category_group_id DESC;',
-  );
-  if (results === undefined) {
-    return [];
-  }
-  const count = results.rows.length;
-  const transactionCategoryGroups: ITransactionCategoryGroup[] = [];
-  for (let i = 0; i < count; i++) {
-    const row: ITransactionCategoryGroup = results.rows.item(i);
-    transactionCategoryGroups.push(row);
-  }
-  return transactionCategoryGroups;
-}
+
 async function getAllTransactionCategories(): Promise<ITransactionCategory[]> {
   const db = await getDatabase();
   const [results] = await db.executeSql(
@@ -174,37 +132,16 @@ async function updateCurrency(updatedCurrency: ICurrency): Promise<void> {
       console.log(`[db] Currency item with id: ${results.insertId} updated.`);
     });
 }
-async function updateTransactionCategoryGroup(
-  updatedTransactionCategoryGroup: ITransactionCategoryGroup,
-): Promise<void> {
-  return getDatabase()
-    .then(db =>
-      db.executeSql(
-        'UPDATE transaction_category_group SET name = ?, color = ? WHERE transaction_category_group_id = ?;',
-        [
-          updatedTransactionCategoryGroup.name,
-          updatedTransactionCategoryGroup.color,
-          updatedTransactionCategoryGroup.transaction_category_group_id,
-        ],
-      ),
-    )
-    .then(([results]) => {
-      console.log(
-        `[db] transaction_category_group item with id: ${results.insertId} updated.`,
-      );
-    });
-}
 async function updateTransactionCategory(
   updatedTransactionCategory: ITransactionCategory,
 ): Promise<void> {
   return getDatabase()
     .then(db =>
       db.executeSql(
-        'UPDATE transaction_category SET name = ?, icon = ?, transaction_category_group_id = ? WHERE transaction_category_id = ?;',
+        'UPDATE transaction_category SET name = ?, icon = ? WHERE transaction_category_id = ?;',
         [
           updatedTransactionCategory.name,
           updatedTransactionCategory.icon,
-          updatedTransactionCategory.transaction_category_group_id,
           updatedTransactionCategory.transaction_category_id,
         ],
       ),
@@ -245,13 +182,6 @@ async function deleteCurrencyByID(id: number): Promise<void> {
     const db = await getDatabase();
     await db.executeSql('DELETE FROM currency WHERE currency_id = ?;', [id]);
   }
-}
-async function deleteTransactionCategoryGroupByID(id: number): Promise<void> {
-  const db = await getDatabase();
-  await db.executeSql(
-    'DELETE FROM transaction_category_group WHERE transaction_category_group_id = ?;',
-    [id],
-  );
 }
 async function deleteTransactionCategoryByID(id: number): Promise<void> {
   return getDatabase()
@@ -343,22 +273,18 @@ function handleAppStateChange(nextAppState: AppStateStatus) {
 // Export the functions which fulfill the Database interface contract
 export const sqliteDatabase: Database = {
   createCurrency,
-  createTransactionCategoryGroup,
   createTransactionCategory,
   createTransaction,
 
   getAllCurrencies,
-  getAllTransactionCategoryGroups,
   getAllTransactionCategories,
   getAllTransactions,
 
   updateCurrency,
-  updateTransactionCategoryGroup,
   updateTransactionCategory,
   updateTransaction,
 
   deleteCurrencyByID,
-  deleteTransactionCategoryGroupByID,
   deleteTransactionCategoryByID,
   deleteTransactionByID,
 };

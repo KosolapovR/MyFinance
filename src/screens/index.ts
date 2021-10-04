@@ -9,6 +9,7 @@ import SignInPictureScreen from './SignInPictureScreen';
 import TargetScreen from './TargetScreen';
 import TransactionsScreen from './TransactionsScreen';
 import SingleTransactionScreen from './SingleTransactionScreen';
+import SingleCategoryScreen from './SingleCategoryScreen';
 
 export {
   AnalyticsScreen,
@@ -22,4 +23,5 @@ export {
   TargetScreen,
   TransactionsScreen,
   SingleTransactionScreen,
+  SingleCategoryScreen,
 };

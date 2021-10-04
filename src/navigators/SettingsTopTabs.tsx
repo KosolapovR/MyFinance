@@ -1,7 +1,7 @@
 import React from 'react';
 import {View} from 'react-native';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import {SettingsScreen} from 'screens';
+import {AnalyticsScreen, SettingsScreen} from 'screens';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -16,7 +16,7 @@ export const SettingsTopTabs = () => {
         />
         <Tab.Screen
           name="AnalyticsScreen"
-          component={SettingsScreen}
+          component={AnalyticsScreen}
           options={{tabBarLabel: 'Analytics'}}
         />
       </Tab.Navigator>

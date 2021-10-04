@@ -1,6 +1,5 @@
 import React, {ReactNode} from 'react';
 import styled from 'styled-components/native';
-import {TextInput} from 'react-native';
 
 interface StyledProps {
   bgColor?: 'white' | 'grey';
@@ -19,7 +18,6 @@ const StyledContainer = styled.View`
     props.bgColor === 'grey' ? '#F2F2F2' : '#FFFFFF'};
   color: ${(props: StyledProps) =>
     props.bgColor === 'grey' ? '#3E496899' : '#222222'};
-  width: 100%;
   border-radius: 8px;
   justify-content: flex-start;
   align-items: center;
@@ -27,6 +25,7 @@ const StyledContainer = styled.View`
   height: 48px;
   padding-left: 16px;
   padding-right: 16px;
+  flex: 1;
 `;
 
 const StyledIcon = styled.View`

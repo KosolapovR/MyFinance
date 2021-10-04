@@ -9,14 +9,13 @@ const currencyTableName = 'currency';
 const tablesNames = [
   versionTableName,
   currencyTableName,
-  transactionCategoryGroupTableName,
   transactionCategoryTableName,
   transactionTableName,
+  transactionCategoryGroupTableName,
 ];
 
 const createTablesQueries = [
-  `
-    CREATE TABLE IF NOT EXISTS ${versionTableName}(
+  `CREATE TABLE IF NOT EXISTS ${versionTableName}(
         version_id INTEGER PRIMARY KEY NOT NULL,
         version INTEGER 
     );`,
@@ -26,17 +25,10 @@ const createTablesQueries = [
         country_code INTEGER NOT NULL,
         country_name TEXT NOT NULL
     );`,
-  `CREATE TABLE IF NOT EXISTS ${transactionCategoryGroupTableName}(
-        transaction_category_group_id INTEGER PRIMARY KEY,
-        name TEXT NOT NULL,
-        color TEXT
-    );`,
   `CREATE TABLE IF NOT EXISTS ${transactionCategoryTableName}(
         transaction_category_id INTEGER PRIMARY KEY,
         name TEXT NOT NULL,
-        icon TEXT NOT NULL,
-        transaction_category_group_id INTEGER,
-        FOREIGN KEY (transaction_category_group_id) REFERENCES ${transactionCategoryGroupTableName}(transaction_category_group_id)
+        icon TEXT NOT NULL
     );`,
   `CREATE TABLE IF NOT EXISTS ${transactionTableName}(
         transaction_id INTEGER PRIMARY KEY,
@@ -110,18 +102,16 @@ export class DatabaseInitialization {
       transaction.executeSql(query3);
       console.log(`[db] Drop  table ${tablesNames[4]}`);
       transaction.executeSql(query4);
+    } else {
+      console.log(`[db] Create  table if not exist ${tablesNames[0]}`);
+      transaction.executeSql(createTablesQueries[0]);
+      console.log(`[db] Create  table  if not exist ${tablesNames[1]}`);
+      transaction.executeSql(createTablesQueries[1]);
+      console.log(`[db] Create  table  if not exist ${tablesNames[2]}`);
+      transaction.executeSql(createTablesQueries[2]);
+      console.log(`[db] Create  table  if not exist ${tablesNames[3]}`);
+      transaction.executeSql(createTablesQueries[3]);
     }
-
-    console.log(`[db] Create  table if not exist ${tablesNames[0]}`);
-    transaction.executeSql(createTablesQueries[0]);
-    console.log(`[db] Create  table  if not exist ${tablesNames[1]}`);
-    transaction.executeSql(createTablesQueries[1]);
-    console.log(`[db] Create  table  if not exist ${tablesNames[2]}`);
-    transaction.executeSql(createTablesQueries[2]);
-    console.log(`[db] Create  table  if not exist ${tablesNames[3]}`);
-    transaction.executeSql(createTablesQueries[3]);
-    console.log(`[db] Create  table  if not exist ${tablesNames[4]}`);
-    transaction.executeSql(createTablesQueries[4]);
   }
 
   // Get the version of the database, as specified in the Version table

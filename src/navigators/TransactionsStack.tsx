@@ -1,10 +1,15 @@
 import React from 'react';
-import {TransactionsScreen, SingleTransactionScreen} from 'screens';
+import {
+  TransactionsScreen,
+  SingleTransactionScreen,
+  SingleCategoryScreen,
+} from 'screens';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 export type TransactionsStackParamList = {
   TransactionsScreen: undefined;
   SingleTransactionScreen: undefined;
+  SingleCategoryScreen: {categoryId: string};
 };
 const Stack = createNativeStackNavigator<TransactionsStackParamList>();
 
@@ -22,6 +27,20 @@ const TransactionsStack = () => {
         options={{
           headerTitle: 'Транзакция',
         }}
+      />
+      <Stack.Screen
+        name="SingleCategoryScreen"
+        component={SingleCategoryScreen}
+        options={({
+          route: {
+            params: {categoryId},
+          },
+        }) => ({
+          headerTitle: categoryId
+            ? 'Редактировать категорию'
+            : 'Добавить категорию',
+        })}
+        initialParams={{categoryId: ''}}
       />
     </Stack.Navigator>
   );
