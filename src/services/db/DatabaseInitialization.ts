@@ -1,4 +1,5 @@
 import SQLite from 'react-native-sqlite-storage';
+import {currenciesISO} from 'services/db/constants';
 
 const versionTableName = 'version';
 const transactionTableName = 'transactions';
@@ -21,9 +22,10 @@ const createTablesQueries = [
     );`,
   `CREATE TABLE IF NOT EXISTS ${currencyTableName}(
         currency_id INTEGER PRIMARY KEY,
-        name TEXT NOT NULL,
-        country_code INTEGER NOT NULL,
-        country_name TEXT NOT NULL
+        alphabetic_code TEXT NOT NULL,
+        currency TEXT NOT NULL,
+        country TEXT NOT NULL,
+        numeric_code INTEGER NOT NULL
     );`,
   `CREATE TABLE IF NOT EXISTS ${transactionCategoryTableName}(
         transaction_category_id INTEGER PRIMARY KEY,
@@ -36,7 +38,6 @@ const createTablesQueries = [
         comment TEXT,
         sum REAL NOT NULL,
         date TEXT NOT NULL,
-        time TEXT NOT NULL,
         transaction_category_id INTEGER,
         currency_id INTEGER,
         FOREIGN KEY (transaction_category_id) REFERENCES ${transactionCategoryTableName}(transaction_category_id),
@@ -111,6 +112,18 @@ export class DatabaseInitialization {
       transaction.executeSql(createTablesQueries[2]);
       console.log(`[db] Create  table  if not exist ${tablesNames[3]}`);
       transaction.executeSql(createTablesQueries[3]);
+
+      //initialize currencies
+      const insertQuery =
+        `INSERT INTO ${currencyTableName}(numeric_code, alphabetic_code, country, currency) values` +
+        currenciesISO
+          .map(
+            i =>
+              `(${i.numeric_code}, '${i.alphabetic_code}', '${i.country}', '${i.currency}')`,
+          )
+          .join(',');
+
+      transaction.executeSql(insertQuery);
     }
   }
 

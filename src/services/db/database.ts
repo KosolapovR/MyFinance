@@ -6,7 +6,6 @@ import {ICurrency, ITransaction, ITransactionCategory} from 'models';
 
 export interface Database {
   // Create
-  createCurrency(newCurrency: ICurrency): Promise<void>;
   createTransactionCategory(
     newTransactionCategory: ITransactionCategory,
   ): Promise<void>;
@@ -16,27 +15,17 @@ export interface Database {
   getAllTransactionCategories(): Promise<ITransactionCategory[]>;
   getAllTransactions(): Promise<ITransaction[]>;
   // Update
-  updateCurrency(updatedCurrency: ICurrency): Promise<void>;
   updateTransactionCategory(
     updatedTransactionCategory: ITransactionCategory,
   ): Promise<void>;
   updateTransaction(updatedTransaction: ITransaction): Promise<void>;
   // Delete
-  deleteCurrencyByID(id: number): Promise<void>;
   deleteTransactionCategoryByID(id: number): Promise<void>;
   deleteTransactionByID(id: number): Promise<void>;
 }
 
 let databaseInstance: SQLite.SQLiteDatabase | undefined;
 
-// Insert a new list into the database
-async function createCurrency(newCurrency: ICurrency): Promise<void> {
-  const db = await getDatabase();
-  await db.executeSql(
-    'INSERT INTO currency (name, country_code, country_name) VALUES (?, ?, ?);',
-    [newCurrency.name, newCurrency.countryCode, newCurrency.countryName],
-  );
-}
 async function createTransactionCategory(
   newTransactionCategory: ITransactionCategory,
 ): Promise<void> {
@@ -50,14 +39,13 @@ async function createTransactionCategory(
 async function createTransaction(newTransaction: ITransaction): Promise<void> {
   const db = await getDatabase();
   await db.executeSql(
-    'INSERT INTO transaction (type, sum, transaction_category_id, currency_id, date, time, comment) VALUES (?, ?, ?, ?, ?, ?, ?);',
+    'INSERT INTO transaction (type, sum, transaction_category_id, currency_id, date, comment) VALUES (?, ?, ?, ?, ?, ?);',
     [
       newTransaction.type,
       newTransaction.sum,
       newTransaction.transaction_category_id,
       newTransaction.currency_id,
       newTransaction.date,
-      newTransaction.time,
       newTransaction.comment,
     ],
   );
@@ -115,23 +103,6 @@ async function getAllTransactions(): Promise<ITransaction[]> {
   return transactions;
 }
 
-async function updateCurrency(updatedCurrency: ICurrency): Promise<void> {
-  return getDatabase()
-    .then(db =>
-      db.executeSql(
-        'UPDATE currency SET name = ?, country_code = ?, country_name = ? WHERE currency_id = ?;',
-        [
-          updatedCurrency.name,
-          updatedCurrency.countryCode,
-          updatedCurrency.countryName,
-          updatedCurrency.currency_id,
-        ],
-      ),
-    )
-    .then(([results]) => {
-      console.log(`[db] Currency item with id: ${results.insertId} updated.`);
-    });
-}
 async function updateTransactionCategory(
   updatedTransactionCategory: ITransactionCategory,
 ): Promise<void> {
@@ -158,14 +129,13 @@ async function updateTransaction(
   return getDatabase()
     .then(db =>
       db.executeSql(
-        'UPDATE transactions SET type = ?, sum = ?, transaction_category_id = ?, currency_id = ?, date = ?, time = ?, comment = ? WHERE transaction_id = ?;',
+        'UPDATE transactions SET type = ?, sum = ?, transaction_category_id = ?, currency_id = ?, date = ?, comment = ? WHERE transaction_id = ?;',
         [
           updatedTransaction.type,
           updatedTransaction.sum,
           updatedTransaction.transaction_category_id,
           updatedTransaction.currency_id,
           updatedTransaction.date,
-          updatedTransaction.time,
           updatedTransaction.comment,
         ],
       ),
@@ -177,12 +147,6 @@ async function updateTransaction(
     });
 }
 
-async function deleteCurrencyByID(id: number): Promise<void> {
-  if (id) {
-    const db = await getDatabase();
-    await db.executeSql('DELETE FROM currency WHERE currency_id = ?;', [id]);
-  }
-}
 async function deleteTransactionCategoryByID(id: number): Promise<void> {
   return getDatabase()
     .then(db => {
@@ -272,7 +236,6 @@ function handleAppStateChange(nextAppState: AppStateStatus) {
 
 // Export the functions which fulfill the Database interface contract
 export const sqliteDatabase: Database = {
-  createCurrency,
   createTransactionCategory,
   createTransaction,
 
@@ -280,11 +243,9 @@ export const sqliteDatabase: Database = {
   getAllTransactionCategories,
   getAllTransactions,
 
-  updateCurrency,
   updateTransactionCategory,
   updateTransaction,
 
-  deleteCurrencyByID,
   deleteTransactionCategoryByID,
   deleteTransactionByID,
 };

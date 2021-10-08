@@ -17,19 +17,6 @@ export function useCurrency() {
     refreshListOfCurrencies();
   }, [refreshListOfCurrencies]);
 
-  function createCurrency(newCurrency: ICurrency): Promise<void> {
-    return database
-      .createCurrency(newCurrency)
-      .then(refreshListOfCurrencies)
-      .catch(err => {
-        console.error('cannot create currency', err);
-      });
-  }
-
-  function deleteCurrencyByID(id: number): Promise<void> {
-    return database.deleteCurrencyByID(id).then(refreshListOfCurrencies);
-  }
-
   async function selectCurrency(currency: ICurrency) {
     setSelectedCurrency(currency);
   }
@@ -37,8 +24,6 @@ export function useCurrency() {
   return {
     currencies,
     selectedCurrency,
-    createCurrency,
-    deleteCurrencyByID,
     selectCurrency,
   };
 }

@@ -12,44 +12,24 @@ const Row = styled.View`
 
 interface Prop {
   onChangeDate: (date: string) => void;
-  onChangeTime: (time: string) => void;
   initialDate?: Date;
-  initialTime?: Date;
 }
 
-const DateTime = ({
-  initialDate = new Date(),
-  initialTime = new Date(),
-  onChangeDate,
-  onChangeTime,
-}: Prop) => {
+const DateTime = ({initialDate = new Date(), onChangeDate}: Prop) => {
   const [date, setDate] = useState(initialDate);
-  const [time, setTime] = useState(initialTime);
   const [showDate, setShowDate] = useState(false);
-  const [showTime, setShowTime] = useState(false);
 
   const handleChangeDate = (event: Event, selectedDate: Date | undefined) => {
-    console.log('selectedDate', selectedDate);
+    console.log('selectedDate', selectedDate?.toISOString());
     const currentDate = selectedDate || date;
     setShowDate(Platform.OS === 'ios');
     setDate(currentDate);
-    onChangeDate(currentDate?.toISOString().substring(0, 10));
-  };
-
-  const handleChangeTime = (event: Event, selectedTime: Date | undefined) => {
-    const currentTime = selectedTime || time;
-    setShowTime(Platform.OS === 'ios');
-    setTime(currentTime);
-    onChangeTime(currentTime?.toISOString().substring(10));
+    onChangeDate(currentDate?.toISOString());
   };
 
   const onShowDate = useCallback(() => {
     setShowDate(true);
   }, [setShowDate]);
-
-  const onShowTime = useCallback(() => {
-    setShowTime(true);
-  }, [setShowTime]);
 
   return (
     <Row>
@@ -57,12 +37,6 @@ const DateTime = ({
         <>
           <Button icon="calendar-month" mode="contained" onPress={onShowDate}>
             {date?.toDateString()}
-          </Button>
-          <Button
-            icon="clock-time-nine-outline"
-            mode="contained"
-            onPress={onShowTime}>
-            {time?.toTimeString()}
           </Button>
         </>
       )}
@@ -72,19 +46,9 @@ const DateTime = ({
           testID="datePicker"
           style={{flex: 1}}
           value={date}
-          mode={'date'}
+          mode={'datetime'}
           display={Platform.OS === 'ios' ? 'compact' : 'default'}
           onChange={handleChangeDate}
-        />
-      )}
-      {(showTime || Platform.OS === 'ios') && (
-        <DateTimePicker
-          testID="timePicker"
-          style={{flex: 1}}
-          value={time}
-          mode={'time'}
-          display={Platform.OS === 'ios' ? 'compact' : 'default'}
-          onChange={handleChangeTime}
         />
       )}
     </Row>

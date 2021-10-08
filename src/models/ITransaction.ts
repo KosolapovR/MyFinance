@@ -4,7 +4,6 @@ export interface ITransaction {
   transaction_category_id: string;
   sum: number;
   date: string;
-  time: string;
   currency_id: string;
   comment?: string;
 }

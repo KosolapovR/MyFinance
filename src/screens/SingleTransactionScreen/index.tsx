@@ -9,6 +9,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import DateTime from 'components/inputs/DateTime';
 import {
+  FlatList,
   ScrollView,
   StyleSheet,
   Text,
@@ -19,12 +20,13 @@ import SearchInput from 'components/inputs/SearchInput';
 import {NativeStackScreenProps} from 'react-native-screens/native-stack';
 import {TransactionsStackParamList} from 'navigators/TransactionsStack';
 import {useTransactionCategory} from 'hooks/useTransactionCategory';
+import ListItemBasic from 'components/ListItemBasic';
+import sleep from 'services/sleep';
+import {ITransaction} from 'models/ITransaction';
 
 interface FormValues {
-  category: string;
   sum: string;
   date: string;
-  time: string;
 }
 
 type Props = NativeStackScreenProps<
@@ -50,19 +52,22 @@ const validationSchema = Yup.object().shape({
 });
 
 function SingleTransactionScreen({navigation}: Props) {
-  const {transactionCategories} = useTransactionCategory();
+  const {
+    transactionCategories,
+    selectedTransactionCategory,
+    selectTransactionCategory,
+    deleteTransactionCategoryByID,
+  } = useTransactionCategory();
 
   const {handleSubmit, handleChange, values, errors}: FormikProps<FormValues> =
     useFormik({
       validationSchema: validationSchema,
       initialValues: {
-        category: '',
         sum: '',
         date: new Date().toISOString().substring(0, 10),
-        time: new Date().toISOString().substring(10),
       },
       onSubmit: (formValues: FormikValues) => {
-        onSubmit(formValues);
+        onSubmit(formValues as ITransaction);
       },
     });
 
@@ -77,7 +82,7 @@ function SingleTransactionScreen({navigation}: Props) {
         <StyledForm>
           <DateTime
             onChangeDate={handleChange('date')}
-            onChangeTime={handleChange('time')}
+            initialDate={new Date('2021-10-12T21:28:00.000Z')}
           />
 
           <TouchableOpacity
@@ -85,13 +90,15 @@ function SingleTransactionScreen({navigation}: Props) {
               actionSheetRef.current?.show();
             }}
             style={styles.btn}>
-            <Icon
-              name={transactionCategories[0]?.icon.toLowerCase()}
-              size={30}
-              color="#3E4968"
-            />
+            {selectedTransactionCategory?.icon && (
+              <Icon
+                name={selectedTransactionCategory?.icon || ''}
+                size={30}
+                color="#3E4968"
+              />
+            )}
             <Text style={styles.btnTitle}>
-              {transactionCategories[0]?.name}
+              {selectedTransactionCategory?.name || ''}
             </Text>
           </TouchableOpacity>
           <TextInput
@@ -123,9 +130,7 @@ function SingleTransactionScreen({navigation}: Props) {
               onPress={async () => {
                 try {
                   actionSheetRef.current?.hide();
-                  await (function () {
-                    return new Promise(resolve => setTimeout(resolve, 0));
-                  })();
+                  await sleep();
                   navigation.navigate('SingleCategoryScreen');
                 } catch (err) {}
               }}
@@ -138,22 +143,46 @@ function SingleTransactionScreen({navigation}: Props) {
             }}
             style={styles.scrollview}>
             <View>
-              {transactionCategories &&
-                transactionCategories.map(item => (
-                  <TouchableOpacity
+              <FlatList
+                data={transactionCategories}
+                renderItem={({item}) => (
+                  <ListItemBasic
                     key={item.transaction_category_id}
                     onPress={() => {
+                      selectTransactionCategory(item);
                       actionSheetRef.current?.hide();
                     }}
-                    style={styles.listItem}>
-                    <Text>{item.name}</Text>
-                    <Icon
-                      name={item.icon.toLowerCase()}
-                      size={30}
-                      color="#3E4968"
-                    />
-                  </TouchableOpacity>
-                ))}
+                    onEdit={async () => {
+                      try {
+                        actionSheetRef.current?.hide();
+                        await sleep();
+                        navigation.navigate('SingleCategoryScreen', {
+                          categoryId: item.transaction_category_id,
+                        });
+                      } catch (err) {}
+                    }}
+                    onDelete={() => {
+                      if (item.transaction_category_id) {
+                        return deleteTransactionCategoryByID(
+                          item.transaction_category_id,
+                        );
+                      }
+                    }}>
+                    <TouchableOpacity
+                      key={item.transaction_category_id}
+                      style={styles.listItem}>
+                      <Text>{item.name}</Text>
+                      {item.icon && (
+                        <Icon
+                          name={item.icon.toLowerCase()}
+                          size={30}
+                          color="#3E4968"
+                        />
+                      )}
+                    </TouchableOpacity>
+                  </ListItemBasic>
+                )}
+              />
             </View>
 
             {/*  Add a Small Footer at Bottom */}
