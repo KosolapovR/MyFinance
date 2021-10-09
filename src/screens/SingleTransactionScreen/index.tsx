@@ -7,7 +7,6 @@ import {IconButton, TextInput, Button} from 'react-native-paper';
 import ActionSheet from 'react-native-actions-sheet';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import DateTime from 'components/inputs/DateTime';
 import {
   FlatList,
   ScrollView,
@@ -23,6 +22,7 @@ import {useTransactionCategory} from 'hooks/useTransactionCategory';
 import ListItemBasic from 'components/ListItemBasic';
 import sleep from 'services/sleep';
 import {ITransaction} from 'models/ITransaction';
+import DateInput from 'components/inputs/DateInput';
 
 interface FormValues {
   sum: string;
@@ -80,10 +80,7 @@ function SingleTransactionScreen({navigation}: Props) {
     <SafeAreaView>
       <Container>
         <StyledForm>
-          <DateTime
-            onChangeDate={handleChange('date')}
-            initialDate={new Date('2021-10-12T21:28:00.000Z')}
-          />
+          <DateInput />
 
           <TouchableOpacity
             onPress={() => {
