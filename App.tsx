@@ -9,11 +9,12 @@ import {
 import {Provider as StoreProvider} from 'react-redux';
 import {Provider as PaperProvider} from 'react-native-paper';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
+import {ThemeProvider} from 'styled-components/native';
 
 import {store} from './src/store';
 import RootStack from 'navigators/RootStack';
 import {DatabaseProvider} from 'context/DatabaseContext';
-import {theme} from 'theme/index';
+import {theme} from 'theme';
 
 interface IApp {
   type: 'app' | 'storybook' | '';
@@ -27,14 +28,16 @@ const App = () => {
     return (
       <StoreProvider store={store}>
         <DatabaseProvider>
-          <PaperProvider theme={theme}>
-            <SafeAreaProvider>
-              <StatusBar
-                barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-              />
-              <RootStack isAuth={true} />
-            </SafeAreaProvider>
-          </PaperProvider>
+          <ThemeProvider theme={theme}>
+            <PaperProvider theme={theme}>
+              <SafeAreaProvider>
+                <StatusBar
+                  barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+                />
+                <RootStack isAuth={true} />
+              </SafeAreaProvider>
+            </PaperProvider>
+          </ThemeProvider>
         </DatabaseProvider>
       </StoreProvider>
     );

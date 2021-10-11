@@ -4,7 +4,7 @@ export default {
     padding: 20,
     justifyContent: 'center',
     alignItems: 'stretch',
-    backgroundColor: '#141416',
+    backgroundColor: '#fafafa',
   },
   container: {
     flex: 1,

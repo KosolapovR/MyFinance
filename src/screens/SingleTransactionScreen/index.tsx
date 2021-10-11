@@ -1,28 +1,17 @@
-import React, {useCallback, useRef} from 'react';
+import React, {useCallback} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {FormikProps, FormikValues, useFormik} from 'formik';
 import * as Yup from 'yup';
 import styled from 'styled-components/native';
-import {IconButton, TextInput, Button} from 'react-native-paper';
-import ActionSheet from 'react-native-actions-sheet';
+import {Button, TextInput} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-
-import {
-  FlatList,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import SearchInput from 'components/inputs/SearchInput';
+import {StyleSheet, Text, TouchableOpacity} from 'react-native';
 import {NativeStackScreenProps} from 'react-native-screens/native-stack';
+
 import {TransactionsStackParamList} from 'navigators/TransactionsStack';
 import {useTransactionCategory} from 'hooks/useTransactionCategory';
-import ListItemBasic from 'components/ListItemBasic';
-import sleep from 'services/sleep';
 import {ITransaction} from 'models/ITransaction';
-import DateInput from 'components/inputs/DateInput';
+import DateTimeInput from 'components/inputs/DateTimeInput';
 
 interface FormValues {
   sum: string;
@@ -42,22 +31,12 @@ const StyledForm = styled.View`
   height: 180px;
 `;
 
-const Row = styled.View`
-  flex-direction: row;
-  margin-top: 16px;
-`;
-
 const validationSchema = Yup.object().shape({
   sum: Yup.string().required('Обязательное поле'),
 });
 
 function SingleTransactionScreen({navigation}: Props) {
-  const {
-    transactionCategories,
-    selectedTransactionCategory,
-    selectTransactionCategory,
-    deleteTransactionCategoryByID,
-  } = useTransactionCategory();
+  const {selectedTransactionCategory} = useTransactionCategory();
 
   const {handleSubmit, handleChange, values, errors}: FormikProps<FormValues> =
     useFormik({
@@ -75,16 +54,22 @@ function SingleTransactionScreen({navigation}: Props) {
     console.log('formValues', formValues);
   }, []);
 
-  const actionSheetRef = useRef<ActionSheet>(null);
   return (
     <SafeAreaView>
       <Container>
         <StyledForm>
-          <DateInput />
+          <DateTimeInput
+            onChangeDate={() => {}}
+            onChangeTime={() => {}}
+            date={new Date()}
+            hours={13}
+            minutes={43}
+          />
 
           <TouchableOpacity
             onPress={() => {
-              actionSheetRef.current?.show();
+              // actionSheetRef.current?.show();
+              navigation.navigate('SelectCategoryScreen');
             }}
             style={styles.btn}>
             {selectedTransactionCategory?.icon && (
@@ -95,7 +80,7 @@ function SingleTransactionScreen({navigation}: Props) {
               />
             )}
             <Text style={styles.btnTitle}>
-              {selectedTransactionCategory?.name || ''}
+              {selectedTransactionCategory?.name || 'Выберите категорию'}
             </Text>
           </TouchableOpacity>
           <TextInput
@@ -104,89 +89,27 @@ function SingleTransactionScreen({navigation}: Props) {
             onChangeText={handleChange('sum')}
             error={!!errors.sum}
           />
+
+          <TouchableOpacity
+            onPress={() => {
+              // actionSheetRef.current?.show();
+              navigation.navigate('SelectCurrencyScreen');
+            }}
+            style={styles.btn}>
+            {selectedTransactionCategory?.icon && (
+              <Icon
+                name={selectedTransactionCategory?.icon || ''}
+                size={30}
+                color="#3E4968"
+              />
+            )}
+            <Text style={styles.btnTitle}>
+              {selectedTransactionCategory?.name || 'Выберите валюту'}
+            </Text>
+          </TouchableOpacity>
           <Button onPress={handleSubmit}>Добавить</Button>
         </StyledForm>
       </Container>
-      <ActionSheet
-        initialOffsetFromBottom={1}
-        ref={actionSheetRef}
-        statusBarTranslucent
-        bounceOnOpen={true}
-        drawUnderStatusBar={true}
-        bounciness={4}
-        gestureEnabled={true}
-        defaultOverlayOpacity={0.3}>
-        <View
-          style={{
-            paddingHorizontal: 12,
-          }}>
-          <Row>
-            <SearchInput onChangeText={() => {}} />
-            <IconButton
-              icon="plus"
-              onPress={async () => {
-                try {
-                  actionSheetRef.current?.hide();
-                  await sleep();
-                  navigation.navigate('SingleCategoryScreen');
-                } catch (err) {}
-              }}
-            />
-          </Row>
-          <ScrollView
-            nestedScrollEnabled
-            onMomentumScrollEnd={() => {
-              actionSheetRef.current?.handleChildScrollEnd();
-            }}
-            style={styles.scrollview}>
-            <View>
-              <FlatList
-                data={transactionCategories}
-                renderItem={({item}) => (
-                  <ListItemBasic
-                    key={item.transaction_category_id}
-                    onPress={() => {
-                      selectTransactionCategory(item);
-                      actionSheetRef.current?.hide();
-                    }}
-                    onEdit={async () => {
-                      try {
-                        actionSheetRef.current?.hide();
-                        await sleep();
-                        navigation.navigate('SingleCategoryScreen', {
-                          categoryId: item.transaction_category_id,
-                        });
-                      } catch (err) {}
-                    }}
-                    onDelete={() => {
-                      if (item.transaction_category_id) {
-                        return deleteTransactionCategoryByID(
-                          item.transaction_category_id,
-                        );
-                      }
-                    }}>
-                    <TouchableOpacity
-                      key={item.transaction_category_id}
-                      style={styles.listItem}>
-                      <Text>{item.name}</Text>
-                      {item.icon && (
-                        <Icon
-                          name={item.icon.toLowerCase()}
-                          size={30}
-                          color="#3E4968"
-                        />
-                      )}
-                    </TouchableOpacity>
-                  </ListItemBasic>
-                )}
-              />
-            </View>
-
-            {/*  Add a Small Footer at Bottom */}
-            <View style={styles.footer} />
-          </ScrollView>
-        </View>
-      </ActionSheet>
     </SafeAreaView>
   );
 }
@@ -236,10 +159,6 @@ const styles = StyleSheet.create({
     shadowOffset: {width: 0.3 * 4, height: 0.5 * 4},
     shadowOpacity: 0.2,
     shadowRadius: 0.7 * 4,
-  },
-  safeareview: {
-    justifyContent: 'center',
-    flex: 1,
   },
   btnTitle: {
     color: 'white',

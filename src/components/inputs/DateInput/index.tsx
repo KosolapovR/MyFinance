@@ -1,9 +1,13 @@
 import * as React from 'react';
 import {Button} from 'react-native-paper';
 import {DatePickerModal} from 'react-native-paper-dates';
+import {theme} from 'theme';
 
-export default function DateInput() {
-  const [date, setDate] = React.useState<Date | undefined>(undefined);
+interface Props {
+  onChange: (dateIso: string) => void;
+  date: Date;
+}
+export default function DateInput({onChange, date}: Props) {
   const [open, setOpen] = React.useState(false);
 
   const onDismissSingle = React.useCallback(() => {
@@ -13,16 +17,19 @@ export default function DateInput() {
   const onConfirmSingle = React.useCallback(
     params => {
       setOpen(false);
-      setDate(params.date);
-      console.log(params.date);
+      onChange(params.date.toISOString());
     },
-    [setOpen, setDate],
+    [setOpen, onChange],
   );
 
   return (
     <>
-      <Button onPress={() => setOpen(true)} uppercase={false} mode="outlined">
-        Pick single date
+      <Button
+        color={theme.colors.gray}
+        icon="calendar"
+        mode="outlined"
+        onPress={() => setOpen(true)}>
+        {date?.toLocaleDateString()}
       </Button>
       <DatePickerModal
         // locale={'en'} optional, default: automatic

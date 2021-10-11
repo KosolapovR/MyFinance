@@ -1,6 +1,7 @@
 import React from 'react';
 import BasicInput from '../BasicInput';
 import Icon from 'react-native-vector-icons/EvilIcons';
+import {theme} from 'theme';
 
 interface Props {
   onChangeText: (v: string) => void;
@@ -14,7 +15,7 @@ const SearchInput = (props: Props) => {
     <BasicInput
       {...props}
       placeholder={'Search'}
-      leftIcon={<Icon name="search" size={30} color="#3E4968" />}
+      leftIcon={<Icon name="search" size={30} color={theme.colors.gray} />}
     />
   );
 };

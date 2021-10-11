@@ -45,73 +45,84 @@ const createTablesQueries = [
     );`,
 ];
 
+const dropAllTables = false;
+
 export class DatabaseInitialization {
   // Perform any updates to the database schema. These can occur during initial configuration, or after an app store update.
   // This should be called each time the database is opened.
-  public updateDatabaseTables(database: SQLite.SQLiteDatabase): Promise<void> {
+
+  private async isCurrencyTableExist(
+    database: SQLite.SQLiteDatabase,
+  ): Promise<boolean> {
+    const res = await database.executeSql(
+      `SELECT name FROM sqlite_master WHERE type='table' AND name='${currencyTableName}';`,
+    );
+
+    return !!res[0].rows.length;
+  }
+
+  public async updateDatabaseTables(
+    database: SQLite.SQLiteDatabase,
+  ): Promise<void> {
     let dbVersion: number = 0;
 
-    // First: create tables if they do not already exist
-    return database
-      .transaction(this.createTables)
-      .then(() => {
-        // Get the current database version
-        return this.getDatabaseVersion(database);
-      })
-      .then(version => {
-        dbVersion = version;
+    const isExist = await this.isCurrencyTableExist(database);
 
-        // Perform DB updates based on this version
+    //First: create tables if they do not already exist
+    if (isExist && !dropAllTables) {
+      return Promise.resolve();
+    } else {
+      return database
+        .transaction(this.createTables)
+        .then(() => {
+          // Get the current database version
+          return this.getDatabaseVersion(database);
+        })
+        .then(version => {
+          dbVersion = version;
 
-        // This is included as an example of how you make database schema changes once the app has been shipped
-        if (dbVersion < 1) {
-          // Uncomment the next line, and the referenced function below, to enable this
-          // return database.transaction(this.preVersion1Inserts);
-        }
-        // otherwise,
-        return;
-      })
-      .then(() => {
-        if (dbVersion < 2) {
-          // Uncomment the next line, and the referenced function below, to enable this
-          // return database.transaction(this.preVersion2Inserts);
-        }
-        // otherwise,
-        return;
-      });
+          // Perform DB updates based on this version
+
+          // This is included as an example of how you make database schema changes once the app has been shipped
+          if (dbVersion < 1) {
+            // Uncomment the next line, and the referenced function below, to enable this
+            // return database.transaction(this.preVersion1Inserts);
+          }
+          // otherwise,
+          return;
+        })
+        .then(() => {
+          if (dbVersion < 2) {
+            // Uncomment the next line, and the referenced function below, to enable this
+            // return database.transaction(this.preVersion2Inserts);
+          }
+          // otherwise,
+          return;
+        });
+    }
   }
 
   // Perform initial setup of the database tables
   private createTables(transaction: SQLite.Transaction) {
     // DANGER! For dev only
-    const dropAllTables = false;
     if (dropAllTables) {
-      console.log('[db] Start dropping tables');
       const query0 = `DROP TABLE IF EXISTS ${tablesNames[0]};`;
       const query1 = `DROP TABLE IF EXISTS ${tablesNames[1]};`;
       const query2 = `DROP TABLE IF EXISTS ${tablesNames[2]};`;
       const query3 = `DROP TABLE IF EXISTS ${tablesNames[3]};`;
       const query4 = `DROP TABLE IF EXISTS ${tablesNames[4]};`;
 
-      console.log(`[db] Drop  table ${tablesNames[0]}`);
       transaction.executeSql(query0);
-      console.log(`[db] Drop  table ${tablesNames[1]}`);
       transaction.executeSql(query1);
-      console.log(`[db] Drop  table ${tablesNames[2]}`);
       transaction.executeSql(query2);
-      console.log(`[db] Drop  table ${tablesNames[3]}`);
       transaction.executeSql(query3);
-      console.log(`[db] Drop  table ${tablesNames[4]}`);
       transaction.executeSql(query4);
     } else {
-      console.log(`[db] Create  table if not exist ${tablesNames[0]}`);
       transaction.executeSql(createTablesQueries[0]);
-      console.log(`[db] Create  table  if not exist ${tablesNames[1]}`);
       transaction.executeSql(createTablesQueries[1]);
-      console.log(`[db] Create  table  if not exist ${tablesNames[2]}`);
       transaction.executeSql(createTablesQueries[2]);
-      console.log(`[db] Create  table  if not exist ${tablesNames[3]}`);
       transaction.executeSql(createTablesQueries[3]);
+      transaction.executeSql(createTablesQueries[4]);
 
       //initialize currencies
       const insertQuery =

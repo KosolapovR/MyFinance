@@ -4,14 +4,18 @@ import {
   SingleTransactionScreen,
   SingleCategoryScreen,
 } from 'screens';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import SelectCategoryScreen from 'screens/SelectCategoryScreen';
+import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
+import SelectCurrencyScreen from 'screens/SelectCurrencyScreen';
 
 export type TransactionsStackParamList = {
   TransactionsScreen: undefined;
   SingleTransactionScreen: undefined;
   SingleCategoryScreen: {categoryId: string};
+  SelectCategoryScreen: undefined;
+  SelectCurrencyScreen: undefined;
 };
-const Stack = createNativeStackNavigator<TransactionsStackParamList>();
+const Stack = createStackNavigator<TransactionsStackParamList>();
 
 const TransactionsStack = () => {
   return (
@@ -41,6 +45,22 @@ const TransactionsStack = () => {
             : 'Добавить категорию',
         })}
         initialParams={{categoryId: ''}}
+      />
+      <Stack.Screen
+        name="SelectCategoryScreen"
+        component={SelectCategoryScreen}
+        options={{
+          ...TransitionPresets.SlideFromRightIOS,
+          headerTitle: 'Выбрать категорию',
+        }}
+      />
+      <Stack.Screen
+        name="SelectCurrencyScreen"
+        component={SelectCurrencyScreen}
+        options={{
+          ...TransitionPresets.SlideFromRightIOS,
+          headerTitle: 'Выбрать валюту',
+        }}
       />
     </Stack.Navigator>
   );

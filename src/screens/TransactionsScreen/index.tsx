@@ -1,5 +1,5 @@
 import React, {useCallback} from 'react';
-import {View, Platform} from 'react-native';
+import {Platform, View} from 'react-native';
 import {useKeyboardVisible} from 'hooks/useKeyboardVisible';
 import {useFocusEffect} from '@react-navigation/native';
 import SearchInput from 'components/inputs/SearchInput';

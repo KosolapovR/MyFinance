@@ -1,7 +1,7 @@
 import React from 'react';
 import {Text, View} from 'react-native';
 import ListItem from 'components/ListItem';
-import {TouchableOpacity} from 'react-native-gesture-handler';
+import {TouchableOpacity} from 'react-native';
 
 interface Props {
   onPress: () => void;
@@ -28,7 +28,7 @@ const ListItemBasic = ({children, onEdit, onDelete, ...rest}: Props) => (
                 color: '#1b1a17',
                 paddingHorizontal: 10,
                 fontWeight: '600',
-                paddingVertical: 20,
+                paddingVertical: 19,
               }}>
               Edit
             </Text>
@@ -45,7 +45,7 @@ const ListItemBasic = ({children, onEdit, onDelete, ...rest}: Props) => (
                 color: '#1b1a17',
                 paddingHorizontal: 10,
                 fontWeight: '600',
-                paddingVertical: 20,
+                paddingVertical: 19,
               }}>
               Delete
             </Text>
