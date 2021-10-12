@@ -6,7 +6,7 @@ import Scroller, {ScrollerItem} from 'components/Scroller';
 
 const scrollerItems: ScrollerItem[] = [
   {
-    id: 1,
+    id: '1',
     label: 'Eда',
     iconName: 'food',
     actions: {
@@ -16,7 +16,7 @@ const scrollerItems: ScrollerItem[] = [
     },
   },
   {
-    id: 2,
+    id: '2',
     label: 'Дом',
     iconName: 'home',
     actions: {
@@ -26,7 +26,7 @@ const scrollerItems: ScrollerItem[] = [
     },
   },
   {
-    id: 3,
+    id: '3',
     label: 'Бензин',
     iconName: 'fuel',
     actions: {
@@ -36,11 +36,11 @@ const scrollerItems: ScrollerItem[] = [
     },
   },
   {
-    id: 4,
+    id: '4',
     label: 'Кафе',
     iconName: 'coffee',
     actions: {
-      onPress: action('click-row'),
+      onPress: () => console.log('clicked'),
       onEdit: () => Promise.resolve(),
       onDelete: action('delete-row'),
     },

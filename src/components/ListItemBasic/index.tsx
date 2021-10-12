@@ -2,6 +2,9 @@ import React from 'react';
 import {Text, View} from 'react-native';
 import ListItem from 'components/ListItem';
 import {TouchableOpacity} from 'react-native';
+import {theme} from 'theme/index';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import styled from 'styled-components/native';
 
 interface Props {
   onPress: () => void;
@@ -10,46 +13,49 @@ interface Props {
   onDelete: () => Promise<void> | void;
 }
 
+const StyledEditBox = styled.TouchableOpacity`
+  align-items: center;
+  justify-content: center;
+  border-radius: ${props => props.theme.sizes.lg};
+  border-width: 1px;
+  border-color: ${props => props.theme.colors.accent};
+  background-color: ${props => props.theme.softPalette.softyellow};
+  margin-right: ${props => props.theme.sizes.xs};
+`;
+
 const ListItemBasic = ({children, onEdit, onDelete, ...rest}: Props) => (
   <ListItem
     {...rest}
     rightSwipeActions={() => {
       return (
-        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-          <TouchableOpacity
-            onPress={onEdit}
-            style={{
-              backgroundColor: '#ff8303',
-              justifyContent: 'center',
-              alignItems: 'flex-end',
-            }}>
-            <Text
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            paddingBottom: 4,
+          }}>
+          <StyledEditBox onPress={onEdit}>
+            <Icon
+              name={'pencil'}
+              size={24}
+              color={theme.colors.accent}
               style={{
-                color: '#1b1a17',
-                paddingHorizontal: 10,
-                fontWeight: '600',
-                paddingVertical: 19,
-              }}>
-              Edit
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={onDelete}
-            style={{
-              backgroundColor: '#e56b6b',
-              justifyContent: 'center',
-              alignItems: 'flex-end',
-            }}>
-            <Text
+                paddingHorizontal: 16,
+                paddingVertical: 12,
+              }}
+            />
+          </StyledEditBox>
+          <StyledEditBox onPress={onDelete}>
+            <Icon
+              name={'delete'}
+              size={24}
+              color={theme.colors.accent}
               style={{
-                color: '#1b1a17',
-                paddingHorizontal: 10,
-                fontWeight: '600',
-                paddingVertical: 19,
-              }}>
-              Delete
-            </Text>
-          </TouchableOpacity>
+                paddingHorizontal: 16,
+                paddingVertical: 12,
+              }}
+            />
+          </StyledEditBox>
         </View>
       );
     }}>

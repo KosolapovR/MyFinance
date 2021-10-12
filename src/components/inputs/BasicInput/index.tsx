@@ -18,18 +18,19 @@ const StyledContainer = styled.View`
     props.bgColor === 'grey' ? '#F2F2F2' : '#FFFFFF'};
   color: ${(props: StyledProps) =>
     props.bgColor === 'grey' ? '#3E496899' : '#222222'};
-  border-radius: ${props => props.theme.borderRadius.xs};
+  border-radius: ${props => props.theme.sizes.xs};
   justify-content: flex-start;
   align-items: center;
   flex-direction: row;
   height: 48px;
-  padding-left: ${props => props.theme.spaces.md};
-  padding-right: ${props => props.theme.spaces.md};
+  max-height: 48px;
+  padding-left: ${props => props.theme.sizes.md};
+  padding-right: ${props => props.theme.sizes.md};
   flex: 1;
 `;
 
 const StyledIcon = styled.View`
-  margin-right: ${props => props.theme.spaces.xs};
+  margin-right: ${props => props.theme.sizes.xs};
 `;
 
 const StyledTextInput = styled.TextInput`

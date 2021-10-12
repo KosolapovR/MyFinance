@@ -14,7 +14,6 @@ export default function CenterView({children = null}) {
           <SafeAreaView style={styles.bottomSafeArea}>
             <StatusBar
               animated={true}
-              backgroundColor="#000000"
               barStyle="light-content"
               hidden={false}
             />
@@ -30,11 +29,9 @@ export default function CenterView({children = null}) {
 const styles = StyleSheet.create({
   topSafeArea: {
     flex: 0,
-    backgroundColor: '#fafafa',
   },
   bottomSafeArea: {
     flex: 1,
-    backgroundColor: '#fafafa',
     justifyContent: 'center',
   },
   content: {
@@ -46,6 +43,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     flex: 1,
-    backgroundColor: '#000000',
   },
 });

@@ -15,7 +15,9 @@ const SearchInput = (props: Props) => {
     <BasicInput
       {...props}
       placeholder={'Search'}
-      leftIcon={<Icon name="search" size={30} color={theme.colors.gray} />}
+      leftIcon={
+        <Icon name="search" size={30} color={theme.grayPalette.text2} />
+      }
     />
   );
 };

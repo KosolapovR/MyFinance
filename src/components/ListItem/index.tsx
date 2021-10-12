@@ -1,6 +1,7 @@
 import React, {useCallback, useState} from 'react';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
-import {TouchableOpacity} from 'react-native';
+import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
+import {StyleSheet} from 'react-native';
 
 interface Props {
   onPress: () => void;
@@ -15,30 +16,29 @@ const ListItem = ({
   onPress,
   leftSwipeActions,
   rightSwipeActions,
-  onSwipeableRightOpen,
-  onSwipeableLeftOpen,
   children,
 }: Props) => {
-  const [activeOpacity, setActiveOpacity] = useState(0);
+  const [isSwipe, setSwipe] = useState(false);
   const onBegan = useCallback(() => {
-    setActiveOpacity(1);
-  }, [setActiveOpacity]);
+    setSwipe(true);
+  }, [setSwipe]);
   const onEnded = useCallback(() => {
-    setActiveOpacity(0);
-  }, [setActiveOpacity]);
+    setSwipe(false);
+  }, [setSwipe]);
   return (
     <Swipeable
-      onSwipeableRightWillOpen={onBegan}
-      onSwipeableClose={onEnded}
       renderLeftActions={leftSwipeActions}
       renderRightActions={rightSwipeActions}
-      onSwipeableRightOpen={onSwipeableRightOpen}
-      onSwipeableLeftOpen={onSwipeableLeftOpen}
-      useNativeAnimations={true}>
-      <TouchableOpacity
-        activeOpacity={activeOpacity}
-        delayPressIn={44}
-        onPress={onPress}
+      onSwipeableOpen={onBegan}
+      onSwipeableClose={onEnded}
+      useNativeAnimations={true}
+      containerStyle={styles.container}>
+      <TouchableWithoutFeedback
+        onPress={() => {
+          if (!isSwipe) {
+            onPress();
+          }
+        }}
         style={{
           backgroundColor: 'white',
           flexDirection: 'row',
@@ -47,9 +47,15 @@ const ListItem = ({
           paddingHorizontal: 15,
         }}>
         {children}
-      </TouchableOpacity>
+      </TouchableWithoutFeedback>
     </Swipeable>
   );
 };
 
 export default ListItem;
+
+const styles = StyleSheet.create({
+  container: {
+    marginVertical: 2,
+  },
+});

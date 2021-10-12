@@ -4,6 +4,7 @@ import styled from 'styled-components/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {theme} from 'theme';
 import ListItemBasic from 'components/ListItemBasic';
+import SearchInput from 'components/inputs/SearchInput';
 
 interface ScrollerItemActions {
   onDelete?: (v?: number | string) => void;
@@ -32,9 +33,22 @@ const StyledTouchable = styled.TouchableOpacity`
   align-items: center;
   flex: 1;
   height: 56px;
-  padding-left: ${props => props.theme.spaces.md};
-  padding-right: ${props => props.theme.spaces.md};
-  border-radius: ${props => props.theme.borderRadius.xs};
+  padding-left: ${props => props.theme.sizes.md};
+  padding-right: ${props => props.theme.sizes.md};
+  border-radius: ${props => props.theme.sizes.xs};
+`;
+
+const StyledBox = styled.View`
+  flex-direction: row;
+  flex: 1;
+  height: 100%;
+  align-items: center;
+  border-bottom-color: ${props => props.theme.grayPalette.gray};
+  border-bottom-width: 1px;
+`;
+
+const Text2 = styled.Text`
+  color: ${props => props.theme.grayPalette.text2};
 `;
 
 const ITEM_HEIGHT = 56;
@@ -47,17 +61,20 @@ const Item = React.memo(
           onPress={actions.onPress}
           onEdit={actions.onEdit}
           onDelete={actions.onDelete}>
-          <Icon
-            name={iconName || 'ghost'}
-            color={theme.colors.gray}
-            style={{marginRight: 20}}
-          />
-          <Text>{label}</Text>
+          <StyledBox>
+            <Icon
+              name={iconName || 'ghost'}
+              size={22}
+              color={theme.colors.accent}
+              style={{marginRight: 20}}
+            />
+            <Text2>{label}</Text2>
+          </StyledBox>
         </ListItemBasic>
       </View>
     ) : (
       <StyledTouchable onPress={actions.onPress}>
-        <Icon name={iconName || 'ghost'} color={theme.colors.gray} />
+        <Icon name={iconName || 'ghost'} color={theme.colors.accent} />
         <Text>{label}</Text>
       </StyledTouchable>
     ),
@@ -78,6 +95,7 @@ const Scroller = ({items}: Props) => {
 
   return (
     <ScrollerContainer>
+      <SearchInput onChangeText={() => {}} />
       {items.length > 0 ? (
         <VirtualizedList
           removeClippedSubviews
