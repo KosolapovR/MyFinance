@@ -1,7 +1,5 @@
 import React from 'react';
-import {Text, View} from 'react-native';
 import ListItem from 'components/ListItem';
-import {TouchableOpacity} from 'react-native';
 import {theme} from 'theme/index';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import styled from 'styled-components/native';
@@ -23,17 +21,18 @@ const StyledEditBox = styled.TouchableOpacity`
   margin-right: ${props => props.theme.sizes.xs};
 `;
 
+const StyledActions = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  padding-bottom: 4px;
+`;
+
 const ListItemBasic = ({children, onEdit, onDelete, ...rest}: Props) => (
   <ListItem
     {...rest}
     rightSwipeActions={() => {
       return (
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            paddingBottom: 4,
-          }}>
+        <StyledActions>
           <StyledEditBox onPress={onEdit}>
             <Icon
               name={'pencil'}
@@ -56,7 +55,7 @@ const ListItemBasic = ({children, onEdit, onDelete, ...rest}: Props) => (
               }}
             />
           </StyledEditBox>
-        </View>
+        </StyledActions>
       );
     }}>
     {children}

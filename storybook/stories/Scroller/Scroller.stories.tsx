@@ -4,7 +4,7 @@ import React from 'react';
 import CenterView from '../CenterView';
 import Scroller, {ScrollerItem} from 'components/Scroller';
 
-const scrollerItems: ScrollerItem[] = [
+const scrollerItemsWithActions: ScrollerItem[] = [
   {
     id: '1',
     label: 'Eда',
@@ -46,6 +46,41 @@ const scrollerItems: ScrollerItem[] = [
     },
   },
 ];
+const scrollerItems: ScrollerItem[] = [
+  {
+    id: '1',
+    label: 'Eда',
+    iconName: 'food',
+    actions: {
+      onPress: action('click-row'),
+    },
+  },
+  {
+    id: '2',
+    label: 'Дом',
+    iconName: 'home',
+    actions: {
+      onPress: action('click-row'),
+    },
+  },
+  {
+    id: '3',
+    label: 'Бензин',
+    iconName: 'fuel',
+    actions: {
+      onPress: action('click-row'),
+    },
+  },
+  {
+    id: '4',
+    label: 'Кафе',
+    iconName: 'coffee',
+    actions: {
+      onPress: () => console.log('clicked'),
+    },
+  },
+];
 storiesOf('Scroller', module)
   .addDecorator((getStory: any) => <CenterView>{getStory()}</CenterView>)
-  .add('Scroller', () => <Scroller items={scrollerItems} />);
+  .add('withActions', () => <Scroller items={scrollerItemsWithActions} />)
+  .add('default', () => <Scroller items={scrollerItems} />);

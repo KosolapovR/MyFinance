@@ -22,7 +22,7 @@ interface IApp {
 const App = () => {
   const isDarkMode = useColorScheme() === 'dark';
 
-  const [app, setApp] = useState<IApp>({type: 'storybook'});
+  const [app, setApp] = useState<IApp>({type: 'app'});
 
   if (app.type === 'app') {
     return (

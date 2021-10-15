@@ -25,6 +25,8 @@ type Props = NativeStackScreenProps<
 
 const Container = styled.View`
   padding: 14px;
+  height: 100%;
+  background-color: white;
 `;
 
 const StyledForm = styled.View`

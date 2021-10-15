@@ -10,6 +10,7 @@ export const theme = {
     lg: '20px',
   },
   colors: {
+    ...DefaultTheme.colors,
     primary: '#60034C',
     accent: '#F98B83',
   },
