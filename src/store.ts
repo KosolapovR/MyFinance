@@ -1,9 +1,9 @@
 import {configureStore} from '@reduxjs/toolkit';
-import exampleReducer from './features/example/exampleSlice';
+import currencyReducer from 'features/currency/currencySlice';
 
 export const store = configureStore({
   reducer: {
-    example: exampleReducer,
+    currency: currencyReducer,
   },
 });
 

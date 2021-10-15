@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback, useMemo, useState} from 'react';
 import {Animated, View} from 'react-native';
 import styled from 'styled-components/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -9,17 +9,6 @@ import {
   useCollapsibleSubHeader,
 } from 'react-navigation-collapsible';
 import SearchInput from 'components/inputs/SearchInput';
-
-const SearchBar = () => (
-  <View
-    style={{
-      width: '100%',
-      height: 64,
-      backgroundColor: 'white',
-    }}>
-    <SearchInput onChangeText={() => {}} />
-  </View>
-);
 
 interface ScrollerItemActions {
   onDelete?: (v?: number | string) => void;
@@ -122,8 +111,29 @@ const getItemLayout = (
 // const getItem = (data: ScrollerItem[], index: number) => data[index];
 
 const Scroller = ({items}: Props) => {
+  const [searchingQuery, setSearchingQuery] = useState('');
+
+  const filteredItems = useMemo(
+    () =>
+      searchingQuery
+        ? items.filter(
+            item =>
+              item.label.toLowerCase().match(searchingQuery.toLowerCase()) ||
+              item.leftText?.toLowerCase().match(searchingQuery.toLowerCase()),
+          )
+        : items,
+    [items, searchingQuery],
+  );
+
   const {onScroll, containerPaddingTop, scrollIndicatorInsetTop, translateY} =
     useCollapsibleSubHeader();
+
+  const handleSearch = useCallback(
+    query => {
+      setSearchingQuery(query);
+    },
+    [setSearchingQuery],
+  );
 
   return (
     <ScrollerContainer>
@@ -134,7 +144,7 @@ const Scroller = ({items}: Props) => {
             contentContainerStyle={{paddingTop: containerPaddingTop}}
             scrollIndicatorInsets={{top: scrollIndicatorInsetTop}}
             removeClippedSubviews
-            data={items}
+            data={filteredItems}
             renderItem={renderItem}
             keyExtractor={item => item.id}
             initialNumToRender={14}
@@ -143,7 +153,14 @@ const Scroller = ({items}: Props) => {
             windowSize={30}
           />
           <CollapsibleSubHeaderAnimator translateY={translateY}>
-            <SearchBar />
+            <View
+              style={{
+                width: '100%',
+                height: 64,
+                backgroundColor: 'white',
+              }}>
+              <SearchInput onChangeText={handleSearch} />
+            </View>
           </CollapsibleSubHeaderAnimator>
         </>
       ) : (

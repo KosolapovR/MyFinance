@@ -10,6 +10,8 @@ interface Props extends StyledProps {
   placeholder?: string;
   value?: string;
   leftIcon?: ReactNode;
+  rightIcon?: ReactNode;
+  onClickRightIcon?: () => void;
 }
 
 const StyledContainer = styled.View`
@@ -29,19 +31,35 @@ const StyledContainer = styled.View`
   flex: 1;
 `;
 
-const StyledIcon = styled.View`
+const StyledLeftIcon = styled.View`
   margin-right: ${props => props.theme.sizes.xs};
+`;
+
+const StyledRightIcon = styled.TouchableOpacity`
+  margin-left: ${props => props.theme.sizes.xs};
 `;
 
 const StyledTextInput = styled.TextInput`
   flex-shrink: 1;
+  flex-grow: 1;
 `;
 
-const BasicInput = ({bgColor = 'grey', leftIcon, ...rest}: Props) => {
+const BasicInput = ({
+  bgColor = 'grey',
+  leftIcon,
+  rightIcon,
+  onClickRightIcon,
+  ...rest
+}: Props) => {
   return (
     <StyledContainer bgColor={bgColor}>
-      {leftIcon && <StyledIcon>{leftIcon}</StyledIcon>}
+      {leftIcon && <StyledLeftIcon>{leftIcon}</StyledLeftIcon>}
       <StyledTextInput {...rest} />
+      {rightIcon && (
+        <StyledRightIcon onPress={onClickRightIcon}>
+          {rightIcon}
+        </StyledRightIcon>
+      )}
     </StyledContainer>
   );
 };

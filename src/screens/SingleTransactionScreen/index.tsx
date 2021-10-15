@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {FormikProps, FormikValues, useFormik} from 'formik';
 import * as Yup from 'yup';
@@ -9,9 +9,10 @@ import {StyleSheet, Text, TouchableOpacity} from 'react-native';
 import {NativeStackScreenProps} from 'react-native-screens/native-stack';
 
 import {TransactionsStackParamList} from 'navigators/TransactionsStack';
-import {useTransactionCategory} from 'hooks/useTransactionCategory';
 import {ITransaction} from 'models/ITransaction';
 import DateTimeInput from 'components/inputs/DateTimeInput';
+import {useAppDispatch, useAppSelector, useTransactionCategory} from 'hooks';
+import {getSelectedCurrency, reset} from 'features/currency/currencySlice';
 
 interface FormValues {
   sum: string;
@@ -38,7 +39,13 @@ const validationSchema = Yup.object().shape({
 });
 
 function SingleTransactionScreen({navigation}: Props) {
+  const dispatch = useAppDispatch();
   const {selectedTransactionCategory} = useTransactionCategory();
+  const selectedCurrency = useAppSelector(getSelectedCurrency);
+
+  useEffect(() => {
+    dispatch(reset());
+  }, [dispatch]);
 
   const {handleSubmit, handleChange, values, errors}: FormikProps<FormValues> =
     useFormik({
@@ -70,7 +77,6 @@ function SingleTransactionScreen({navigation}: Props) {
 
           <TouchableOpacity
             onPress={() => {
-              // actionSheetRef.current?.show();
               navigation.navigate('SelectCategoryScreen');
             }}
             style={styles.btn}>
@@ -94,7 +100,6 @@ function SingleTransactionScreen({navigation}: Props) {
 
           <TouchableOpacity
             onPress={() => {
-              // actionSheetRef.current?.show();
               navigation.navigate('SelectCurrencyScreen');
             }}
             style={styles.btn}>
@@ -106,7 +111,8 @@ function SingleTransactionScreen({navigation}: Props) {
               />
             )}
             <Text style={styles.btnTitle}>
-              {selectedTransactionCategory?.name || 'Выберите валюту'}
+              {(selectedCurrency && selectedCurrency?.alphabetic_code) ||
+                'Выберите валюту'}
             </Text>
           </TouchableOpacity>
           <Button onPress={handleSubmit}>Добавить</Button>

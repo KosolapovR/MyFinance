@@ -1,10 +1,12 @@
 import React from 'react';
 import {NativeStackScreenProps} from 'react-native-screens/native-stack';
-import {TransactionsStackParamList} from 'navigators/TransactionsStack';
-import Scroller from 'components/Scroller';
-import {useCurrency} from 'hooks/index';
 import {Text} from 'react-native';
 import styled from 'styled-components/native';
+
+import Scroller from 'components/Scroller';
+import {useAppDispatch, useAppSelector} from 'hooks/index';
+import {setSelectedCurrency} from 'features/currency/currencySlice';
+import {TransactionsStackParamList} from 'navigators/TransactionsStack';
 
 type Props = NativeStackScreenProps<
   TransactionsStackParamList,
@@ -17,8 +19,9 @@ const Container = styled.View`
   background-color: white;
 `;
 
-function SelectCurrencyScreen({}: Props) {
-  const {currencies} = useCurrency();
+function SelectCurrencyScreen({navigation}: Props) {
+  const dispatch = useAppDispatch();
+  const currencies = useAppSelector(state => state.currency.items);
 
   return currencies ? (
     <Container>
@@ -27,7 +30,10 @@ function SelectCurrencyScreen({}: Props) {
           id: (c.currency_id || index).toString(),
           label: c.currency,
           actions: {
-            onPress: () => {},
+            onPress: () => {
+              dispatch(setSelectedCurrency(c));
+              navigation.navigate('SingleTransactionScreen');
+            },
           },
           leftText: c.alphabetic_code || undefined,
         }))}

@@ -239,12 +239,6 @@ export const currenciesISO: ICurrency[] = [
     numeric_code: 156,
   },
   {
-    alphabetic_code: 'AUD',
-    currency: 'Australian Dollar',
-    country: 'CHRISTMAS ISLAND',
-    numeric_code: 36,
-  },
-  {
     alphabetic_code: 'COP',
     currency: 'Colombian Peso',
     country: 'COLOMBIA',
@@ -467,12 +461,6 @@ export const currenciesISO: ICurrency[] = [
     numeric_code: 332,
   },
   {
-    alphabetic_code: 'AUD',
-    currency: 'Australian Dollar',
-    country: 'HEARD ISLAND AND McDONALD ISLANDS',
-    numeric_code: 36,
-  },
-  {
     alphabetic_code: 'HNL',
     currency: 'Lempira',
     country: 'HONDURAS',
@@ -566,12 +554,6 @@ export const currenciesISO: ICurrency[] = [
     currency: 'Kenyan Shilling',
     country: 'KENYA',
     numeric_code: 404,
-  },
-  {
-    alphabetic_code: 'AUD',
-    currency: 'Australian Dollar',
-    country: 'KIRIBATI',
-    numeric_code: 36,
   },
   {
     alphabetic_code: 'KPW',
@@ -765,12 +747,6 @@ export const currenciesISO: ICurrency[] = [
     numeric_code: 710,
   },
   {
-    alphabetic_code: 'AUD',
-    currency: 'Australian Dollar',
-    country: 'NAURU',
-    numeric_code: 36,
-  },
-  {
     alphabetic_code: 'NPR',
     currency: 'Nepalese Rupee',
     country: 'NEPAL',
@@ -813,12 +789,6 @@ export const currenciesISO: ICurrency[] = [
     currency: 'New Zealand Dollar',
     country: 'NIUE',
     numeric_code: 554,
-  },
-  {
-    alphabetic_code: 'AUD',
-    currency: 'Australian Dollar',
-    country: 'NORFOLK ISLAND',
-    numeric_code: 36,
   },
   {
     alphabetic_code: 'NOK',
@@ -1076,18 +1046,10 @@ export const currenciesISO: ICurrency[] = [
     country: 'TURKMENISTAN',
     numeric_code: 934,
   },
-
-  {
-    alphabetic_code: 'AUD',
-    currency: 'Australian Dollar',
-    country: 'TUVALU',
-    numeric_code: 36,
-  },
   {
     alphabetic_code: 'UGX',
     currency: 'Uganda Shilling',
     country: 'UGANDA',
-
     numeric_code: 800,
   },
   {
@@ -1161,12 +1123,6 @@ export const currenciesISO: ICurrency[] = [
     currency: 'Azerbaijan Manat',
     country: 'AZERBAIJAN',
     numeric_code: 945,
-  },
-  {
-    alphabetic_code: 'BYR',
-    currency: 'Belarusian Ruble',
-    country: 'BELARUS',
-    numeric_code: 974,
   },
   {
     alphabetic_code: 'BOP',

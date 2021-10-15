@@ -2,7 +2,7 @@ import SQLite from 'react-native-sqlite-storage';
 import {DatabaseInitialization} from './DatabaseInitialization';
 import {DATABASE} from './constants';
 import {AppState, AppStateStatus} from 'react-native';
-import {ICurrency, ITransaction, ITransactionCategory} from 'models';
+import {ITransaction, ITransactionCategory} from 'models';
 
 export interface Database {
   // Create
@@ -11,7 +11,6 @@ export interface Database {
   ): Promise<void>;
   createTransaction(newTransaction: ITransaction): Promise<void>;
   // Read
-  getAllCurrencies(): Promise<ICurrency[]>;
   getAllTransactionCategories(): Promise<ITransactionCategory[]>;
   getAllTransactions(): Promise<ITransaction[]>;
   // Update
@@ -39,12 +38,12 @@ async function createTransactionCategory(
 async function createTransaction(newTransaction: ITransaction): Promise<void> {
   const db = await getDatabase();
   await db.executeSql(
-    'INSERT INTO transaction (type, sum, transaction_category_id, currency_id, date, comment) VALUES (?, ?, ?, ?, ?, ?);',
+    'INSERT INTO transaction (type, sum, transaction_category_id, currency_alphabetic_code, date, comment) VALUES (?, ?, ?, ?, ?, ?);',
     [
       newTransaction.type,
       newTransaction.sum,
       newTransaction.transaction_category_id,
-      newTransaction.currency_id,
+      newTransaction.currency_alphabetic_code,
       newTransaction.date,
       newTransaction.comment,
     ],
@@ -52,24 +51,6 @@ async function createTransaction(newTransaction: ITransaction): Promise<void> {
 }
 
 // Get an array of all the lists in the database
-async function getAllCurrencies(): Promise<ICurrency[]> {
-  const db = await getDatabase();
-  const [results] = await db.executeSql(
-    'SELECT * FROM currency ORDER BY currency_id DESC;',
-  );
-
-  if (results === undefined) {
-    return [];
-  }
-  const count = results.rows.length;
-  const currencies: ICurrency[] = [];
-  for (let i = 0; i < count; i++) {
-    const row: ICurrency = results.rows.item(i);
-    currencies.push(row);
-  }
-  return currencies;
-}
-
 async function getAllTransactionCategories(): Promise<ITransactionCategory[]> {
   const db = await getDatabase();
   const [results] = await db.executeSql(
@@ -129,12 +110,12 @@ async function updateTransaction(
   return getDatabase()
     .then(db =>
       db.executeSql(
-        'UPDATE transactions SET type = ?, sum = ?, transaction_category_id = ?, currency_id = ?, date = ?, comment = ? WHERE transaction_id = ?;',
+        'UPDATE transactions SET type = ?, sum = ?, transaction_category_id = ?, currency_alphabetic_code = ?, date = ?, comment = ? WHERE transaction_id = ?;',
         [
           updatedTransaction.type,
           updatedTransaction.sum,
           updatedTransaction.transaction_category_id,
-          updatedTransaction.currency_id,
+          updatedTransaction.currency_alphabetic_code,
           updatedTransaction.date,
           updatedTransaction.comment,
         ],
@@ -239,7 +220,6 @@ export const sqliteDatabase: Database = {
   createTransactionCategory,
   createTransaction,
 
-  getAllCurrencies,
   getAllTransactionCategories,
   getAllTransactions,
 

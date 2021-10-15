@@ -1,15 +1,12 @@
 import SQLite from 'react-native-sqlite-storage';
-import {currenciesISO} from 'services/db/constants';
 
 const versionTableName = 'version';
 const transactionTableName = 'transactions';
 const transactionCategoryTableName = 'transaction_category';
 const transactionCategoryGroupTableName = 'transaction_category_group';
-const currencyTableName = 'currency';
 
 const tablesNames = [
   versionTableName,
-  currencyTableName,
   transactionCategoryTableName,
   transactionTableName,
   transactionCategoryGroupTableName,
@@ -19,13 +16,6 @@ const createTablesQueries = [
   `CREATE TABLE IF NOT EXISTS ${versionTableName}(
         version_id INTEGER PRIMARY KEY NOT NULL,
         version INTEGER 
-    );`,
-  `CREATE TABLE IF NOT EXISTS ${currencyTableName}(
-        currency_id INTEGER PRIMARY KEY,
-        alphabetic_code TEXT NOT NULL,
-        currency TEXT NOT NULL,
-        country TEXT NOT NULL,
-        numeric_code INTEGER NOT NULL
     );`,
   `CREATE TABLE IF NOT EXISTS ${transactionCategoryTableName}(
         transaction_category_id INTEGER PRIMARY KEY,
@@ -39,9 +29,8 @@ const createTablesQueries = [
         sum REAL NOT NULL,
         date TEXT NOT NULL,
         transaction_category_id INTEGER,
-        currency_id INTEGER,
-        FOREIGN KEY (transaction_category_id) REFERENCES ${transactionCategoryTableName}(transaction_category_id),
-        FOREIGN KEY (currency_id) REFERENCES ${currencyTableName}(currency_id)
+        currency_alphabetic_code TEXT NOT NULL,
+        FOREIGN KEY (transaction_category_id) REFERENCES ${transactionCategoryTableName}(transaction_category_id)
     );`,
 ];
 
@@ -51,55 +40,39 @@ export class DatabaseInitialization {
   // Perform any updates to the database schema. These can occur during initial configuration, or after an app store update.
   // This should be called each time the database is opened.
 
-  private async isCurrencyTableExist(
-    database: SQLite.SQLiteDatabase,
-  ): Promise<boolean> {
-    const res = await database.executeSql(
-      `SELECT name FROM sqlite_master WHERE type='table' AND name='${currencyTableName}';`,
-    );
-
-    return !!res[0].rows.length;
-  }
-
   public async updateDatabaseTables(
     database: SQLite.SQLiteDatabase,
   ): Promise<void> {
     let dbVersion: number = 0;
 
-    const isExist = await this.isCurrencyTableExist(database);
-
     //First: create tables if they do not already exist
-    if (isExist && !dropAllTables) {
-      return Promise.resolve();
-    } else {
-      return database
-        .transaction(this.createTables)
-        .then(() => {
-          // Get the current database version
-          return this.getDatabaseVersion(database);
-        })
-        .then(version => {
-          dbVersion = version;
+    return database
+      .transaction(this.createTables)
+      .then(() => {
+        // Get the current database version
+        return this.getDatabaseVersion(database);
+      })
+      .then(version => {
+        dbVersion = version;
 
-          // Perform DB updates based on this version
+        // Perform DB updates based on this version
 
-          // This is included as an example of how you make database schema changes once the app has been shipped
-          if (dbVersion < 1) {
-            // Uncomment the next line, and the referenced function below, to enable this
-            // return database.transaction(this.preVersion1Inserts);
-          }
-          // otherwise,
-          return;
-        })
-        .then(() => {
-          if (dbVersion < 2) {
-            // Uncomment the next line, and the referenced function below, to enable this
-            // return database.transaction(this.preVersion2Inserts);
-          }
-          // otherwise,
-          return;
-        });
-    }
+        // This is included as an currency of how you make database schema changes once the app has been shipped
+        if (dbVersion < 1) {
+          // Uncomment the next line, and the referenced function below, to enable this
+          // return database.transaction(this.preVersion1Inserts);
+        }
+        // otherwise,
+        return;
+      })
+      .then(() => {
+        if (dbVersion < 2) {
+          // Uncomment the next line, and the referenced function below, to enable this
+          // return database.transaction(this.preVersion2Inserts);
+        }
+        // otherwise,
+        return;
+      });
   }
 
   // Perform initial setup of the database tables
@@ -110,31 +83,16 @@ export class DatabaseInitialization {
       const query1 = `DROP TABLE IF EXISTS ${tablesNames[1]};`;
       const query2 = `DROP TABLE IF EXISTS ${tablesNames[2]};`;
       const query3 = `DROP TABLE IF EXISTS ${tablesNames[3]};`;
-      const query4 = `DROP TABLE IF EXISTS ${tablesNames[4]};`;
 
       transaction.executeSql(query0);
       transaction.executeSql(query1);
       transaction.executeSql(query2);
       transaction.executeSql(query3);
-      transaction.executeSql(query4);
     } else {
       transaction.executeSql(createTablesQueries[0]);
       transaction.executeSql(createTablesQueries[1]);
       transaction.executeSql(createTablesQueries[2]);
       transaction.executeSql(createTablesQueries[3]);
-      transaction.executeSql(createTablesQueries[4]);
-
-      //initialize currencies
-      const insertQuery =
-        `INSERT INTO ${currencyTableName}(numeric_code, alphabetic_code, country, currency) values` +
-        currenciesISO
-          .map(
-            i =>
-              `(${i.numeric_code}, '${i.alphabetic_code}', '${i.country}', '${i.currency}')`,
-          )
-          .join(',');
-
-      transaction.executeSql(insertQuery);
     }
   }
 

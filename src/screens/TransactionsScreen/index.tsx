@@ -2,7 +2,6 @@ import React, {useCallback} from 'react';
 import {Platform, View} from 'react-native';
 import {useKeyboardVisible} from 'hooks/useKeyboardVisible';
 import {useFocusEffect} from '@react-navigation/native';
-import SearchInput from 'components/inputs/SearchInput';
 import {FAB, Portal} from 'react-native-paper';
 import {TransactionsStackParamList} from 'navigators/TransactionsStack';
 import {NativeStackScreenProps} from 'react-native-screens/native-stack';
@@ -36,7 +35,6 @@ function TransactionsScreen({navigation}: Props) {
       style={{
         flex: 1,
       }}>
-      <SearchInput onChangeText={() => {}} placeholder="Поиск транзакции" />
       <Portal>
         <FAB.Group
           visible={fabIsVisible && !isKeyboardVisible}
